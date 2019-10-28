@@ -16,6 +16,11 @@ torch.backends.cuda.deterministic = True
 ### Model Definition
 '''
 
+class Print(torch.nn.Module):
+    def forward(self, x):
+        print(x.size())
+        return x
+
 class LeNet(torch.nn.Module):
 
     def __init__(self):
@@ -26,15 +31,30 @@ class LeNet(torch.nn.Module):
         num_hidden_nodes = 64
         num_classes = 10
         self.classifier = torch.nn.Sequential(
-            torch.nn.Linear(num_input_nodes, num_hidden_nodes),
+            # Layer 1
+            torch.nn.Conv2d(1, 32, 5),
             torch.nn.ReLU(),
-            torch.nn.Linear(num_hidden_nodes, num_classes)
+            torch.nn.MaxPool2d(2, stride=2),
+
+            torch.nn.Conv2d(32, 64, 5),
+            torch.nn.ReLU(),
+            torch.nn.MaxPool2d(2, stride=2),
+
+            # Flatten inputs before feeding into fully-connected network.
+            torch.nn.Flatten(),
+
+            # Print(),
+
+            # Fully-connected network with one hidden layer and an output layer.
+            torch.nn.Linear(1600, num_hidden_nodes),
+            torch.nn.ReLU(),
+            torch.nn.Linear(num_hidden_nodes, num_classes),
         )
         ### END YOUR CODE HERE ### 
 
     def forward(self, x):
         ### START YOUR CODE HERE ### (You can change anything inside this block) 
-        x = x.view(-1, 32*32) 
+        # x = x.view(-1, 32*32)
         x = self.classifier(x)
         return x
         ### END YOUR CODE HERE ### 
