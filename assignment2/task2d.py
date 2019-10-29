@@ -78,6 +78,21 @@ def torch_image_to_numpy(image: torch.Tensor):
 ### START YOUR CODE HERE ### (You can change anything inside this block)
 # plt.subplot is a nice function to use for this task!
 indices = [5, 8, 19, 22, 34]
-plt.figure(figsize=(20, 4)) 
+
+# Configure 5x2 grid for plotting.
+fig, ax = plt.subplots(2, 5, figsize=(20, 4))
+
+# Vertical spacing between rows.
+plt.subplots_adjust(hspace=0.5)
+
+for n, index in enumerate(indices):
+    # Show kernel and resulting activation.
+    ax[0][n].imshow(torch_image_to_numpy(first_conv_layer.weight[index]))
+    ax[1][n].imshow(torch_image_to_numpy(activation[0, index]), cmap='gray')
+    # Add titles.
+    ax[0][n].set_title(f'Kernel {index}')
+    ax[1][n].set_title(f'Activation {index}')
+
+plt.show()
 ### END YOUR CODE HERE ### 
 
