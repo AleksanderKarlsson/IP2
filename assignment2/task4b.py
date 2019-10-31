@@ -25,8 +25,11 @@ def convolve_im(im: np.array,
         im: np.array of shape [H, W]
     """
     ### START YOUR CODE HERE ### (You can change anything inside this block)
+    padded_kernel = np.zeros(shape=im.shape)
+    padded_kernel[0:kernel.shape[0], 0:kernel.shape[1]] = kernel
 
-    conv_result = im
+    conv_result = np.abs(np.fft.ifft2(np.fft.fftshift(np.fft.fft2(im)) * np.fft.fftshift(np.fft.fft2(padded_kernel))))
+
 
     if verbose:
         # Use plt.subplot to place two or more images beside eachother
