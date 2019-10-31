@@ -3,6 +3,7 @@ import numpy as np
 import skimage
 import utils
 from scipy import signal
+import scipy
 
 
 def convolve_im(im: np.array,
@@ -22,9 +23,13 @@ def convolve_im(im: np.array,
         im: np.array of shape [H, W]
     """
     ### START YOUR CODE HERE ### (You can change anything inside this block)
-    conv_result = np.real(np.fft.ifft2(np.fft.fft2(im) * fft_kernel))
-    # np.fft.fftshift(np.real(np.fft.ifft2(np.fft.fft2(im) * fft_kernel)))
-    # signal.fftconvolve(im, np.real(np.fft.ifft2(fft_kernel)))
+    conv_result = np.abs(
+        np.fft.ifft2(
+            np.fft.fftshift(np.fft.fft2(im)) * fft_kernel
+        )
+    )
+
+    # conv_result = np.log(1 + np.abs(np.fft.fftshift(np.fft.fft2(im))))
 
     if verbose:
         # Use plt.subplot to place two or more images beside eachother
