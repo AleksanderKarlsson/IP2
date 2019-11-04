@@ -42,10 +42,10 @@ def convolve_im(im: np.array,
     padded_kernel = np.fft.ifftshift(padded_kernel)
 
     frequency_image = np.fft.fft2(im)
-    absolute_frequency_image = np.log(1 + np.abs(frequency_image))
+    absolute_frequency_image = np.log(1 + np.abs(np.fft.fftshift(frequency_image)))
     
     convoluted_frequency_image = np.fft.fft2(im) * np.fft.fft2(padded_kernel)
-    absolute_convoluted_frequency_image = np.log(1 + np.abs(convoluted_frequency_image))
+    absolute_convoluted_frequency_image = np.log(1 + np.abs(np.fft.fftshift(convoluted_frequency_image)))
 
     conv_result = np.real(np.fft.ifft2(np.fft.fft2(im) * np.fft.fft2(padded_kernel)))
 
