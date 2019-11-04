@@ -29,23 +29,17 @@ def convolve_im(im: np.array,
     # Create empty matrix which will become the padded matrix.
     padded_kernel = np.zeros(shape=im.shape)
     
-    # Insert kernel into the zero-padded kernel.
+    # Insert kernel into the top-left corner of zero-padded kernel.
     padded_kernel[
-        im.shape[0] // 2 - kernel.shape[0] // 2 : im.shape[0] // 2 - kernel.shape[0] // 2 + kernel.shape[0],
-        im.shape[1] // 2 - kernel.shape[1] // 2 : im.shape[1] // 2 - kernel.shape[1] // 2 + kernel.shape[1],
+        0 : kernel.shape[0],
+        0 : kernel.shape[1],
     ] = kernel
 
-    # Shift the kernel. After shifting, the middle of the kernel will be at the origin in
-    # the frequency domain.
-    # TODO: Shift kernel, or not? Seems to be related to circular / linear convolutions, and spill-over from the
-    # linear convolution being too long. Images with either type of padding look similar.
-    padded_kernel = np.fft.ifftshift(padded_kernel)
-
     frequency_image = np.fft.fft2(im)
-    absolute_frequency_image = np.log(1 + np.abs(frequency_image))
+    absolute_frequency_image = np.log(1 + np.abs(np.fft.fftshift(frequency_image)))
     
     convoluted_frequency_image = np.fft.fft2(im) * np.fft.fft2(padded_kernel)
-    absolute_convoluted_frequency_image = np.log(1 + np.abs(convoluted_frequency_image))
+    absolute_convoluted_frequency_image = np.log(1 + np.abs(np.fft.fftshift(convoluted_frequency_image)))
 
     conv_result = np.real(np.fft.ifft2(np.fft.fft2(im) * np.fft.fft2(padded_kernel)))
 

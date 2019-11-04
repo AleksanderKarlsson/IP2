@@ -3,6 +3,7 @@ import os
 import numpy as np
 import utils
 from task4b import convolve_im
+from matplotlib import pyplot as plt
 
 
 if __name__ == "__main__":
@@ -15,7 +16,8 @@ if __name__ == "__main__":
 
     ### START YOUR CODE HERE ### (You can change anything inside this block)
     im_filtered = convolve_im(im, kernel)
-
+    plt.show()
+    
     ### END YOUR CODE HERE ###
 
     utils.save_im("clown_filtered.png", im_filtered)

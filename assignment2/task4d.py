@@ -18,6 +18,12 @@ def sharpen(im: np.array):
         [0, -1, 0]
     ])
     ### START YOUR CODE HERE ### (You can change anything inside this block)
+
+    # Convolute image and Laplacian to find image details.
+    sharpened = convolve_im(im, laplacian)
+    # Attenuate the details in the image.
+    im = im + sharpened
+
     ### END YOUR CODE HERE ###
     return im
 
