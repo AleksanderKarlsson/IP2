@@ -25,20 +25,45 @@ def convolve_im(im: np.array,
         im: np.array of shape [H, W]
     """
     ### START YOUR CODE HERE ### (You can change anything inside this block)
+    
+    # Create empty matrix which will become the padded matrix.
     padded_kernel = np.zeros(shape=im.shape)
-    padded_kernel[0:kernel.shape[0], 0:kernel.shape[1]] = kernel
+    
+    # Insert kernel into the zero-padded kernel.
+    padded_kernel[
+        im.shape[0] // 2 - kernel.shape[0] // 2 : im.shape[0] // 2 - kernel.shape[0] // 2 + kernel.shape[0],
+        im.shape[1] // 2 - kernel.shape[1] // 2 : im.shape[1] // 2 - kernel.shape[1] // 2 + kernel.shape[1],
+    ] = kernel
 
-    conv_result = np.abs(np.fft.ifft2(np.fft.fftshift(np.fft.fft2(im)) * np.fft.fftshift(np.fft.fft2(padded_kernel))))
+    # Shift the kernel. After shifting, the middle of the kernel will be at the origin in
+    # the frequency domain.
+    # TODO: Shift kernel, or not? Seems to be related to circular / linear convolutions, and spill-over from the
+    # linear convolution being too long. Images with either type of padding look similar.
+    padded_kernel = np.fft.ifftshift(padded_kernel)
 
+    frequency_image = np.fft.fft2(im)
+    absolute_frequency_image = np.log(1 + np.abs(frequency_image))
+    
+    convoluted_frequency_image = np.fft.fft2(im) * np.fft.fft2(padded_kernel)
+    absolute_convoluted_frequency_image = np.log(1 + np.abs(convoluted_frequency_image))
+
+    conv_result = np.real(np.fft.ifft2(np.fft.fft2(im) * np.fft.fft2(padded_kernel)))
 
     if verbose:
-        # Use plt.subplot to place two or more images beside eachother
-        plt.figure(figsize=(20, 4))
-        # plt.subplot(num_rows, num_cols, position (1-indexed))
-        plt.subplot(1, 5, 1)
-        plt.imshow(im, cmap="gray")
-        plt.subplot(1, 5, 5)
-        plt.imshow(conv_result, cmap="gray")
+        fix, ax = plt.subplots(1, 4, figsize=(20, 4))
+
+        ax[0].imshow(im, cmap='gray')
+        ax[0].set_title('Original')
+
+        ax[1].imshow(absolute_frequency_image, cmap='gray')
+        ax[1].set_title('Frequency Domain')
+
+        ax[2].imshow(absolute_convoluted_frequency_image, cmap='gray')
+        ax[2].set_title('Frequency Domain Convolution')
+
+        ax[3].imshow(conv_result, cmap='gray')
+        ax[3].set_title('Convolved Image')
+
     ### END YOUR CODE HERE ###
     return conv_result
 

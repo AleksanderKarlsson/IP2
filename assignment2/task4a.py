@@ -2,8 +2,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import skimage
 import utils
-from scipy import signal
-import scipy
 
 
 def convolve_im(im: np.array,
@@ -23,22 +21,34 @@ def convolve_im(im: np.array,
         im: np.array of shape [H, W]
     """
     ### START YOUR CODE HERE ### (You can change anything inside this block)
-    conv_result = np.abs(
-        np.fft.ifft2(
-            np.fft.fftshift(np.fft.fft2(im)) * fft_kernel
-        )
-    )
 
-    # conv_result = np.log(1 + np.abs(np.fft.fftshift(np.fft.fft2(im))))
+    # Frequency domain representation of the original image.
+    frequency_image = np.fft.fft2(im)
+    # Visualize the frequency domain image.
+    absolute_frequency_image = np.log(1 + np.abs(np.fft.fftshift(frequency_image)))
+    
+    # Convoluted image in the frequency domain.
+    convoluted_frequency_image = frequency_image * fft_kernel
+    # Visualize the frequency domain image convolution.
+    absolute_convoluted_frequency_image = np.log(1 + np.abs(np.fft.fftshift(convoluted_frequency_image)))
+
+    # Show the final convolved image.
+    conv_result = np.real(np.fft.ifft2(convoluted_frequency_image))
 
     if verbose:
-        # Use plt.subplot to place two or more images beside eachother
-        plt.figure(figsize=(20, 4))
-        # plt.subplot(num_rows, num_cols, position (1-indexed))
-        plt.subplot(1, 5, 1)
-        plt.imshow(im, cmap="gray")
-        plt.subplot(1, 5, 5) 
-        plt.imshow(conv_result, cmap="gray")
+        fix, ax = plt.subplots(1, 4, figsize=(20, 4))
+
+        ax[0].imshow(im, cmap='gray')
+        ax[0].set_title('Original')
+
+        ax[1].imshow(absolute_frequency_image, cmap='gray')
+        ax[1].set_title('Frequency Domain')
+
+        ax[2].imshow(absolute_convoluted_frequency_image, cmap='gray')
+        ax[2].set_title('Frequency Domain Convolution')
+
+        ax[3].imshow(conv_result, cmap='gray')
+        ax[3].set_title('Convolved Image')
 
     ### END YOUR CODE HERE ###
     return conv_result

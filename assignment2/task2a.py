@@ -1,7 +1,6 @@
 import skimage
 import numpy as np
 import utils
-import math
 
 
 def MaxPool2d(im: np.array,
@@ -17,11 +16,15 @@ def MaxPool2d(im: np.array,
     """
     stride = kernel_size
     ### START YOUR CODE HERE ### (You can change anything inside this block)
+    
+    # Create image with correct shrinked output shape. 
     new_im = np.empty(shape=[im.shape[0] // stride, im.shape[1] // stride, 3])
 
     for row in range(0, new_im.shape[0]):
         for col in range(0, new_im.shape[1]):
+            # Pool each channel separately.
             for channel in range(im.shape[2]):
+                # Slice matrix and find maximum value in pool.
                 new_im[row, col, channel] = np.max(im[
                     stride * row : stride * (row + 1),
                     stride * col : stride * (col + 1),
@@ -29,6 +32,7 @@ def MaxPool2d(im: np.array,
                 ])
 
     return new_im
+
     ### END YOUR CODE HERE ### 
 
 
