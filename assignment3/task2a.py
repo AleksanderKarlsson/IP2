@@ -18,7 +18,7 @@ def otsu_thresholding(im: np.ndarray) -> int:
     ### START YOUR CODE HERE ### (You can change anything inside this block) 
     
     # Compute normalized histogram of input image.
-    histogram, _ = np.histogram(im, density=True, bins=256)
+    histogram = np.bincount(im.flatten(), minlength=256) / np.prod(im.shape)
 
     # Compute cumulative sums.
     cumulative_distribution = np.cumsum(histogram)
@@ -36,6 +36,10 @@ def otsu_thresholding(im: np.ndarray) -> int:
     for k in range(256):
         prob = cumulative_distribution[k]
         mean = cumulative_mean[k]
+
+        # Prevent runtime warnings from NumPy.
+        if prob == 0: continue
+
         # Compute between-class variance.
         variance = (global_mean * prob - mean) ** 2 / (prob * (1 - prob))
 
