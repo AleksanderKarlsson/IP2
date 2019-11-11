@@ -19,10 +19,40 @@ def region_growing(im: np.ndarray, seed_points: list, T: int) -> np.ndarray:
     """
     ### START YOUR CODE HERE ### (You can change anything inside this block)
     # You can also define other helper functions
+    
+    def get_neighbors(im, row, col):
+        """ Find all neighbor coordinates using Moore neighborhood. """
+        neighbors = [
+            (row - 1, col - 1), (row - 1, col), (row - 1, col + 1),
+            (row + 1, col - 1), (row + 1, col), (row + 1, col + 1),
+            (row, col - 1), (row, col + 1),
+        ]
+
+        # Filter out-of-bounds coordinates.
+        return filter(lambda point: point[0] >= 0 and point[0] < im.shape[0] and \
+            point[1] >= 0 and point[1] < im.shape[1], neighbors)
+
+
     segmented = np.zeros_like(im).astype(bool)
-    for row, col in seed_points:
-        segmented[row, col] = True
+
+    for seed in seed_points:
+        queue = seed_points.copy()
+
+        while queue:
+            row, col = queue.pop(0)
+
+            # Pixel already handled earlier.
+            if segmented[row, col]: continue
+
+            segmented[row, col] = True
+            
+            for neigh_row, neigh_col in get_neighbors(im, row, col):
+                if abs(im[seed[0], seed[1]] - im[neigh_row, neigh_col]) < T:
+                    queue.append((neigh_row, neigh_col))
+
+
     return segmented
+
     ### END YOUR CODE HERE ### 
 
 

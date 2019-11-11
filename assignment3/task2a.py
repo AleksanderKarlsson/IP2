@@ -37,9 +37,6 @@ def otsu_thresholding(im: np.ndarray) -> int:
         prob = cumulative_distribution[k]
         mean = cumulative_mean[k]
 
-        # Prevent runtime warnings from NumPy.
-        if prob == 0: continue
-
         # Compute between-class variance.
         variance = (global_mean * prob - mean) ** 2 / (prob * (1 - prob))
 

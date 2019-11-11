@@ -14,7 +14,18 @@ def remove_noise(im: np.ndarray) -> np.ndarray:
     """
     ### START YOUR CODE HERE ### (You can change anything inside this block)
     # You can also define other helper functions
+
+    # Shave values off the edge of the structuring element. Gives smoother result shape.
+    B = np.zeros(shape=[15, 15])
+    start, end = skimage.draw.circle(7, 7, 8)
+    B[start, end] = 1
+
+    # Perform opening, then closing.
+    skimage.morphology.binary_opening(im, selem=B, out=im)
+    skimage.morphology.binary_closing(im, selem=B, out=im)
+
     return im
+
     ### END YOUR CODE HERE ### 
 
 

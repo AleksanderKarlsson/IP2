@@ -20,13 +20,36 @@ def fill_holes(im: np.ndarray, starting_points: list, num_iterations: int) -> np
     """
     ### START YOUR CODE HERE ### (You can change anything inside this block)
     # You can also define other helper functions
+
     structuring_element = np.array([
         [1, 1, 1],
         [1, 1, 1],
         [1, 1, 1]
     ], dtype=bool)
+    
     result = im.copy()
+    
+    X = np.zeros(shape=im.shape)
+
+    for row, col in starting_points:
+        X[row, col] = 1
+
+    def intersect(A, B):
+        return np.array(
+            [[A[row][col] and B[row][col] 
+            for col in range(im.shape[1])]
+            for row in range(im.shape[0])
+        ])
+
+
+    for k in range(num_iterations):
+        X = intersect(skimage.morphology.binary_dilation(X, selem=structuring_element), np.logical_not(im))
+    
+    mask = result == 0
+    result[mask] = X[mask]
+
     return result
+    
     ### END YOUR CODE HERE ### 
 
 

@@ -17,13 +17,36 @@ def distance_transform(im: np.ndarray) -> np.ndarray:
     ### START YOUR CODE HERE ### (You can change anything inside this block)
     # You can also define other helper functions
     assert im.dtype == np.bool
+
     structuring_element = np.array([
         [1, 1, 1],
         [1, 1, 1],
         [1, 1, 1]
     ], dtype=bool)
+
     result = im.astype(np.int32)
+
+    previous_image = im.copy()
+    
+    intensity = 0
+
+    while True:
+        if np.sum(im) == 0:
+            break
+
+        previous_image = im
+
+        im = skimage.morphology.binary_erosion(im, selem=structuring_element)
+
+        for row in range(im.shape[0]):
+            for col in range(im.shape[1]):
+                if im[row, col] == False and previous_image[row, col] == True:
+                    result[row, col] = intensity
+
+        intensity += 1
+
     return result
+
     ### END YOUR CODE HERE ### 
 
 
