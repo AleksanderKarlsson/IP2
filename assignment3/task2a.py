@@ -16,10 +16,36 @@ def otsu_thresholding(im: np.ndarray) -> int:
     """
     assert im.dtype == np.uint8
     ### START YOUR CODE HERE ### (You can change anything inside this block) 
-    # You can also define other helper functions
-    # Compute normalized histogram
-    threshold = 128
+    
+    # Compute normalized histogram of input image.
+    histogram, _ = np.histogram(im, density=True, bins=256)
+
+    # Compute cumulative sums.
+    cumulative_distribution = np.cumsum(histogram)
+
+    # Compute cumulative means.
+    cumulative_mean = np.cumsum(histogram * np.arange(0, 256))
+
+    # Compute global mean.
+    global_mean = cumulative_mean[-1]
+
+    max_variance = 0
+    threshold = None
+
+    # Try all threshold values and find best one.
+    for k in range(256):
+        prob = cumulative_distribution[k]
+        mean = cumulative_mean[k]
+        # Compute between-class variance.
+        variance = (global_mean * prob - mean) ** 2 / (prob * (1 - prob))
+
+        # Found better threshold.
+        if variance > max_variance:
+            max_variance = variance
+            threshold = k
+
     return threshold
+
     ### END YOUR CODE HERE ### 
 
 
