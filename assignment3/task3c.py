@@ -25,7 +25,7 @@ def extract_boundary(im: np.ndarray) -> np.ndarray:
     boundary = im
     
     # Perform binary subtraction using XOR.
-    boundary = im ^ skimage.morphology.binary_erosion(im, selem=structuring_element)
+    boundary = im ^ skimage.morphology.binary_dilation(im, selem=structuring_element)
 
     return boundary
     
@@ -45,5 +45,5 @@ if __name__ == "__main__":
             boundary.dtype)
 
     boundary = utils.to_uint8(boundary)
-    utils.save_im("lincoln-boundary.png", boundary)
+    utils.save_im("lincoln-boundary-hacked.png", boundary)
 
