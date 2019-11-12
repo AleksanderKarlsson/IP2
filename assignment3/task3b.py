@@ -30,17 +30,22 @@ def distance_transform(im: np.ndarray) -> np.ndarray:
     
     intensity = 0
 
+    # Loop until entire image is black. When pixels disappear, we have their intensity.
     while True:
         if np.sum(im) == 0:
             break
 
         previous_image = im
 
+        # Perform binary erosion.
         im = skimage.morphology.binary_erosion(im, selem=structuring_element)
 
+        # Check which pixels disappeared.
         for row in range(im.shape[0]):
             for col in range(im.shape[1]):
+                # Pixel exists in previous iteration, but disappeared now.
                 if im[row, col] == False and previous_image[row, col] == True:
+                    # Set output intensity.
                     result[row, col] = intensity
 
         intensity += 1
